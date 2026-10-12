@@ -21,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   late final TextEditingController emailController;
   late final TextEditingController passwordController;
   late final ApiClinet apiClient;
-  late LoginService loginService;
+  late final LoginService loginService;
   bool isLoading = false;
   @override
   void initState() {
@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         isLoading = true;
                       });
                       try {
-                        final response = await loginService.logIn(
+                        await loginService.logIn(
                           email: emailController.text.trim(),
                           password: passwordController.text.trim(),
                         );
@@ -136,6 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         setState(() {
                           isLoading = false;
                         });
+                        print(e);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(

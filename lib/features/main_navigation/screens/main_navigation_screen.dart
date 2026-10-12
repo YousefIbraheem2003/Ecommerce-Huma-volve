@@ -1,4 +1,9 @@
+import 'package:ecommerce_app_huma_volve/core/network/api_clinet.dart';
+import 'package:ecommerce_app_huma_volve/core/services/home_services.dart';
+import 'package:ecommerce_app_huma_volve/features/cubit/home_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../core/theme.dart';
 import '../../home/screens/home_screen.dart';
 import '../../cart/screens/cart_screen.dart';
@@ -13,15 +18,23 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
+  late final ApiClinet apiCLient;
+  late final HomeServices homeService;
+  late final HomeCubit homeCubit;
 
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const CartScreen(),
-    const ProfileScreen(),
-  ];
+  void initState() {
+    apiCLient = ApiClinet();
+    homeService = HomeServices(apiCLient);
+    homeCubit = HomeCubit(homeService);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _screens = [
+      BlocProvider(create: (context) => homeCubit, child: const HomeScreen()),
+      const CartScreen(),
+      const ProfileScreen(),
+    ];
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: Container(

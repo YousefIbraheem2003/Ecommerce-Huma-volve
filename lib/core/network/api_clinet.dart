@@ -5,4 +5,3 @@ class ApiClinet {
   ApiClinet()
     : dio = Dio(BaseOptions(baseUrl: 'https://api.escuelajs.co/api/v1/'));
 }
-// 'https://api.escuelajs.co/api/v1/'

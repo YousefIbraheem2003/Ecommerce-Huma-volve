@@ -1,4 +1,7 @@
+import 'package:ecommerce_app_huma_volve/features/cubit/home_cubit.dart';
+import 'package:ecommerce_app_huma_volve/features/cubit/home_states.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/dummy_data.dart';
 import '../../../core/theme.dart';
@@ -14,6 +17,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedCategoryIndex = 0;
+  @override
+  void initState() {
+    context.read<HomeCubit>().loadHomeData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,25 +116,38 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(height: 32),
-                    SizedBox(
-                      height: 44,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: dummyCategories.length,
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(width: 12),
-                        itemBuilder: (context, index) {
-                          return CategoryChip(
-                            label: dummyCategories[index],
-                            isSelected: _selectedCategoryIndex == index,
-                            onTap: () {
-                              setState(() {
-                                _selectedCategoryIndex = index;
-                              });
-                            },
-                          );
-                        },
-                      ),
+                    BlocBuilder<HomeCubit, HomeStates>(
+                      builder: (context, state) {
+                        switch (state) {
+                          case CategoriesLoading():
+                            return Center(child: CircularProgressIndicator());
+                          case CategoriesError():
+                            return Text(state.errorMessage);
+                          case CategoriesSuccess():
+                            final categories = state.categories;
+                            return SizedBox(
+                              height: 44,
+                              child: ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: categories.length,
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(width: 12),
+                                itemBuilder: (context, index) {
+                                  return CategoryChip(
+                                    label: categories[index].name ?? 'all',
+                                    isSelected: _selectedCategoryIndex == index,
+                                    onTap: () {
+                                      setState(() {
+                                        _selectedCategoryIndex = index;
+                                      });
+                                    },
+                                  );
+                                },
+                              ),
+                            );
+                        }
+                        return SizedBox.shrink();
+                      },
                     ),
                   ],
                 ),
