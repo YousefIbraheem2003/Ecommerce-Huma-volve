@@ -12,6 +12,7 @@ class SignupService {
         'name': signUpRequestModel.name,
         'email': signUpRequestModel.email,
         'password': signUpRequestModel.password,
+        'avatar': 'https://i.imgur.com/LDOO4Qs.jpg',
       },
     );
     final jsonData = response.data;
